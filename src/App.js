@@ -1,28 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import axios from "axios";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
-}
+const username = "4fjf146";
+const password = "6hcah19dgu9vu48m7nxqgrmb4wt9twl7xjhinhdm216l0";
+const clientId = "69198";
+
+const App = () => {
+  useEffect(() => {
+    axios
+      .get(
+        ` https://bambucalendar.cl/api/public/v1/clients/${clientId}/bookings`,
+
+        {
+          auth: {
+            username,
+            password
+          }
+        }
+      )
+      .then(response => console.log(response.data));
+  }, []);
+
+  return (
+    <div>
+      <h1>Test</h1>
+    </div>
+  );
+};
 
 export default App;
