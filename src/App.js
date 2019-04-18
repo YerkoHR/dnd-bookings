@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getBookings } from "./redux/actions";
 import { connect } from "react-redux";
 
@@ -530,9 +530,17 @@ const localData = [
   }
 ];
 
-const App = ({ bookings, getBookings }) => {
+// 1:"Reservado, 2: Confirmado, 3: Asiste, 6: No asiste, 7: En espera, 8: Pendiente
+
+const states = [];
+
+//const App = ({ bookings, getBookings }) => {
+const App = () => {
+  const [bookings, onBookings] = useState([]);
+
   useEffect(() => {
-    getBookings();
+    //getBookings();
+    onBookings(localData);
   }, []);
 
   return (
@@ -549,7 +557,7 @@ const App = ({ bookings, getBookings }) => {
         </thead>
 
         <tbody>
-          {bookings.data.map(booking => (
+          {bookings.map(booking => (
             <tr key={booking.id}>
               <td>
                 {booking.client.first_name} {booking.client.last_name}
@@ -567,7 +575,7 @@ const App = ({ bookings, getBookings }) => {
 };
 
 const mapStateToProps = state => ({
-  bookings: state.bookings
+  bookings: state.bookings.data
 });
 
 export default connect(
