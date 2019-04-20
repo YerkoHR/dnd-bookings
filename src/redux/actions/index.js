@@ -34,7 +34,6 @@ export const getBookings = () => async dispatch => {
 export const patchBooking = (id, statusId, newArray) => async dispatch => {
   try {
     dispatch({ type: types.PATCH_BOOKING, newArray });
-
     const patchedBooking = await axios({
       method: "patch",
       url: `https://bambucalendar.cl/api/public/v1/bookings/${id}`,
@@ -53,22 +52,20 @@ export const patchBooking = (id, statusId, newArray) => async dispatch => {
   }
 };
 
-export const deleteBooking = id => async dispatch => {
-  try {
-    const deletedBooking = await axios.delete(
-      `https://bambucalendar.cl/api/public/v1/bookings/${id}`,
-      {
-        auth: {
-          username,
-          password
-        }
+export const deleteBooking = id => dispatch => {
+  axios
+    .delete(`https://bambucalendar.cl/api/public/v1/bookings/${id}`, {
+      auth: {
+        username,
+        password
       }
-    );
-
-    dispatch({ type: types.DELETE_BOOKING });
-  } catch (err) {
-    dispatch({ type: types.GET_ERRORS, err });
-  }
+    })
+    .then(res => {
+      dispatch({ type: types.DELETE_BOOKING });
+    })
+    .catch(err => {
+      dispatch({ type: types.GET_ERRORS, err });
+    });
 };
 
 export const orderAsc = (key, time) => ({
