@@ -1,2 +1,4 @@
 export const GET_BOOKINGS = "GET_BOOKINGS";
 export const LOADING_DATA = "LOADING_DATA";
+export const PATCH_BOOKING = "PATCH_BOOKING";
+export const DELETE_BOOKING = "DELETE_BOOKING";
