@@ -1,34 +1,26 @@
-import React, { useEffect, useState } from "react";
-import { getBookings } from "./redux/actions";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { DragDropContext } from "react-beautiful-dnd";
-import Bookings from "./bookings";
-import { localData, states } from "./localData";
+import Tab from "./Tab";
+import {
+  getBookings,
+  deleteBooking,
+  patchBooking,
+  orderDes,
+  orderAsc
+} from "../redux/actions";
 
-// SOLUCIONAR INHABILIDAD PARA DROP EN TABLA VACIA.
-
-//const App = ({ bookings, getBookings }) => {
-const App = () => {
-  const [bookings, onBookings] = useState([]);
-
-  // Tranformación de data desde array a object con la forma:
-  // { [statusName1]: [arrayOfbookings1], [statusNameN]: [arrayOfBookingsN] }
-
-  const filterData = data => {
-    const filtered = states.map(state => ({
-      [state.status]: data.filter(booking => booking.status_id === state.id)
-    }));
-    let obj = {};
-    states.forEach((item, index) => {
-      obj[item.status] = filtered[index][item.status];
-    });
-    return obj;
-  };
-
+const TableList = ({
+  bookings,
+  getBookings,
+  deleteBooking,
+  patchBooking,
+  orderAsc,
+  orderDes
+}) => {
   // Equivalente a componentDidMount.
   useEffect(() => {
-    //getBookings();
-    onBookings(filterData(localData));
+    getBookings();
   }, []);
 
   const onDragEnd = ({ destination, source, draggableId }) => {
@@ -62,8 +54,7 @@ const App = () => {
         [source.droppableId]: newBookingList
       };
 
-      // MAYBE HERE WE CAN CALL THE PATCH ACTION
-      onBookings(newState);
+      patchBooking(draggableId, dragged[0].status_id, newState);
       return;
     }
 
@@ -84,14 +75,23 @@ const App = () => {
       [source.droppableId]: newSource,
       [destination.droppableId]: newDestination
     };
-    onBookings(newState);
+
+    patchBooking(draggableId, dragged[0].status_id, newState);
   };
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <div className="box-container">
+      <div style={{ width: "80%", margin: "1rem auto" }}>
         {Object.keys(bookings).map(key => (
-          <Bookings data={bookings[key]} head={key} key={key} />
+          <Tab
+            data={bookings[key]}
+            title={key}
+            key={key}
+            deleteBooking={deleteBooking}
+            getBookings={getBookings}
+            orderAsc={orderAsc}
+            orderDes={orderDes}
+          />
         ))}
       </div>
     </DragDropContext>
@@ -104,5 +104,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getBookings }
-)(App);
+  { getBookings, deleteBooking, patchBooking, orderDes, orderAsc }
+)(TableList);
